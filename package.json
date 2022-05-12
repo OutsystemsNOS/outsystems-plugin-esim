@@ -1,0 +1,27 @@
+{
+  "name": "outsystems-plugin-esim",
+  "version": "1.0.0",
+  "description": "Cordova plugin that adds eSIM to compatible devices",
+  "cordova": {
+    "id": "outsystems-plugin-esim",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andregrillo/outsystems-plugin-esim.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "Andre Grillo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andregrillo/outsystems-plugin-esim/issues"
+  },
+  "homepage": "https://github.com/andregrillo/outsystems-plugin-esim#readme"
+}
