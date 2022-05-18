@@ -1,5 +1,5 @@
 var exec = require('cordova/exec');
 
-exports.coolMethod = function (arg0, success, error) {
-    exec(success, error, 'outsystems-plugin-esim', 'coolMethod', [arg0]);
+exports.eSimAdd = function (success, error, smdpServerAddress, esimMatchingID) {
+    exec(success, error, 'eSIM', 'eSimAdd', [smdpServerAddress, esimMatchingID]);
 };

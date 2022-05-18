@@ -2,14 +2,13 @@
 //  eSIM.swift
 //  OutSystemsDemoApp
 //
-//  Created by Andre Grillo on 12/05/2022.
+//  Created by Andre Grillo on 09/05/2022.
 //
 
 import Foundation
 import CoreTelephony
 
-@objc(eSIM)
-class eSIM: CDVPlugin {
+@objc(eSIM) class eSIM: CDVPlugin {
     var pluginResult = CDVPluginResult()
     var pluginCommand = CDVInvokedUrlCommand()
     
