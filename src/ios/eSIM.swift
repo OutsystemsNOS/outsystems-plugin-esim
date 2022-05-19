@@ -44,7 +44,6 @@ import CoreTelephony
                         }
                     } else {
                         //iOS < 15
-                        //MARK: TODO Ver como vai ficar o return! Provavelmente retornará Unknown
                         ctcp.addPlan(with: ctpr) { (result) in
                             switch result{
                             case .unknown:
