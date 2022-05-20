@@ -17,55 +17,65 @@ import CoreTelephony
         self.pluginCommand = command
         self.pluginResult = nil
         self.pluginResult?.setKeepCallbackAs(true)
-        
-        if let smdpServerAddress = command.arguments[0] as? String, let esimMatchingID = command.arguments[1] as? String {
-            if #available(iOS 12.0, *) {
-                let ctcp = CTCellularPlanProvisioning()
-                let supportsESIM = ctcp.supportsCellularPlan()
-                
-                if supportsESIM {
-                    let ctpr = CTCellularPlanProvisioningRequest()
+
+        if let activationCode = command.arguments[0] as? String {
+            let activationCodeArray = activationCode.split(separator: "$")
+            if activationCodeArray.count >= 3 {
+                let smdpServerAddress = String(activationCodeArray[1])
+                let esimMatchingID = String(activationCodeArray[2])
+                if #available(iOS 12.0, *) {
                     let ctcp = CTCellularPlanProvisioning()
-                    ctpr.address = smdpServerAddress
-                    ctpr.matchingID = esimMatchingID
-                    if #available(iOS 15.0, *) {
-                        Task {
-                            let result = await ctcp.addPlan(with: ctpr)
-                            switch result{
-                            case .unknown:
-                                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
-                            case .fail:
-                                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
-                            case .success:
-                                sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
-                            @unknown default:
-                                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                    let supportsESIM = ctcp.supportsCellularPlan()
+                    
+                    if supportsESIM {
+                        let ctpr = CTCellularPlanProvisioningRequest()
+                        let ctcp = CTCellularPlanProvisioning()
+                        ctpr.address = smdpServerAddress
+                        ctpr.matchingID = esimMatchingID
+                        if #available(iOS 15.0, *) {
+                            Task {
+                                let result = await ctcp.addPlan(with: ctpr)
+                                switch result{
+                                case .unknown:
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
+                                case .fail:
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                case .success:
+                                    sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
+                                @unknown default:
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                }
+                            }
+                        } else {
+                            //iOS < 15
+                            ctcp.addPlan(with: ctpr) { (result) in
+                                switch result{
+                                case .unknown:
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
+                                case .fail:
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                case .success:
+                                    self.sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
+                                @unknown default:
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                }
                             }
                         }
                     } else {
-                        //iOS < 15
-                        ctcp.addPlan(with: ctpr) { (result) in
-                            switch result{
-                            case .unknown:
-                                self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
-                            case .fail:
-                                self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
-                            case .success:
-                                self.sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
-                            @unknown default:
-                                self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
-                            }
-                        }
+                        //eSIM not supported
+                        sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: This device is not supported")
                     }
                 } else {
-                    //eSIM not supported
-                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: This device is not supported")
+                    //iOS < 12.0 (Not supported)
+                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Device not supported. iOS version should be 12.0 or higher")
                 }
+
             } else {
-                //iOS < 12.0 (Not supported)
-                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Device not supported. iOS version should be 12.0 or higher")
+                //Missing input parameters
+                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Missing input parameters")
             }
-        }   else {
+            
+                    }   else {
             //Missing input parameters
             sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Missing input parameters")
         }

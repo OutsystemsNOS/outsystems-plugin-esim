@@ -9,6 +9,9 @@
 	<preference name="MCC" default="000" />
 	<preference name="MNC" default="000" />
 	<platform name="android">
+		<config-file target="AndroidManifest.xml" parent="/*">
+            <uses-permission android:name="android.permission.WRITE_EMBEDDED_SUBSCRIPTIONS"/>
+        </config-file>
 		<config-file parent="/*" target="res/xml/config.xml">
 			<feature name="eSIM">
 				<param name="android-package" value="com.outsystems.eSIM" />
