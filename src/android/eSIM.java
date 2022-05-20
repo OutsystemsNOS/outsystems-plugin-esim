@@ -16,9 +16,7 @@ import org.json.JSONException;
 
 
 public class eSIM extends CordovaPlugin {
-    static final String ACTION_DOWNLOAD_SUBSCRIPTION = "download_subscription";
-    static final String LPA_DECLARED_PERMISSION
-            = "com.your.company.lpa.permission.BROADCAST";
+
     Integer resultCode;
     Integer detailedCode;
     Intent resultIntent;
@@ -51,8 +49,7 @@ public class eSIM extends CordovaPlugin {
         } else {
             // Register receiver.
             final String ACTION_DOWNLOAD_SUBSCRIPTION = "download_subscription";
-            final String LPA_DECLARED_PERMISSION
-                    = "com.your.company.lpa.permission.BROADCAST";
+            final String LPA_DECLARED_PERMISSION = cordova.getContext().getPackageName() + ".lpa.permission.BROADCAST";
             BroadcastReceiver receiver =
                     new BroadcastReceiver() {
                         @Override
