@@ -63,7 +63,7 @@ public class eSIM extends CordovaPlugin {
                                     0 /* defaultValue*/);
                             resultIntent = intent;
                             //Missing check the resultCode!
-                            callbackContext.success("eSIM compatible device!");
+                            callbackContext.success("eSIM profile received successfully!");
                         }
                     };
 //            cordova.getContext().registerReceiver(receiver,
