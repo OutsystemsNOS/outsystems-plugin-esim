@@ -37,13 +37,13 @@ import CoreTelephony
                                 let result = await ctcp.addPlan(with: ctpr)
                                 switch result{
                                 case .unknown:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 1: Unknown error")
                                 case .fail:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
                                 case .success:
                                     sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
                                 @unknown default:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
                                 }
                             }
                         } else {
@@ -51,33 +51,33 @@ import CoreTelephony
                             ctcp.addPlan(with: ctpr) { (result) in
                                 switch result{
                                 case .unknown:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Unknown error")
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 1: Unknown error")
                                 case .fail:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
                                 case .success:
                                     self.sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
                                 @unknown default:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Failed to Add eSIM")
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
                                 }
                             }
                         }
                     } else {
                         //eSIM not supported
-                        sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: This device is not supported")
+                        sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 3: This device is not supported")
                     }
                 } else {
                     //iOS < 12.0 (Not supported)
-                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Device not supported. iOS version should be 12.0 or higher")
+                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 4: Device not supported. iOS version should be 12.0 or higher")
                 }
 
             } else {
                 //Missing input parameters
-                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Missing input parameters")
+                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 5: Missing input parameters")
             }
             
                     }   else {
             //Missing input parameters
-            sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error: Missing input parameters")
+            sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 6: Missing input parameters")
         }
     }
     
