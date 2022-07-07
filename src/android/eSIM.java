@@ -29,10 +29,10 @@ public class eSIM extends CordovaPlugin {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     this.eSimAdd(activationCode, callbackContext);
                 } else {
-                    callbackContext.error("Error 4: Android version should be greater or equal to 9");
+                    callbackContext.error("{\"ErrorCode\" : 4, \"ErrorMessage\" : \"Android version should be greater or equal to 9\"}");
                 }
             } else {
-                callbackContext.error("Error 5: Invalid input parameters");
+                callbackContext.error("{\"ErrorCode\" : 5, \"ErrorMessage\" : \"Invalid input parameters\"}");
             }
             return true;
         }
@@ -44,7 +44,7 @@ public class eSIM extends CordovaPlugin {
         EuiccManager mgr = (EuiccManager) this.cordova.getContext().getSystemService(Context.EUICC_SERVICE);
         boolean isEnabled = mgr.isEnabled();
         if (!isEnabled) {
-            callbackContext.error("Error 3: Device is not eSIM compatible");
+            callbackContext.error("{\"ErrorCode\" : 3, \"ErrorMessage\" : \"Device is not eSIM compatible\"}");
             return;
         } else {
             // Register receiver.
@@ -63,7 +63,7 @@ public class eSIM extends CordovaPlugin {
                                     0 /* defaultValue*/);
                             resultIntent = intent;
                             //Missing check the resultCode!
-                            callbackContext.success("eSIM profile received successfully!");
+                            callbackContext.success("OK, eSIM profile received successfully!");
                         }
                     };
 //            cordova.getContext().registerReceiver(receiver,

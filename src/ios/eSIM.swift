@@ -37,13 +37,16 @@ import CoreTelephony
                                 let result = await ctcp.addPlan(with: ctpr)
                                 switch result{
                                 case .unknown:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 1: Unknown error")
+                                    let errorMessage = "{\"ErrorCode\" : 1, \"ErrorMessage\" : \"Unknown error\"}"
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 case .fail:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
+                                    let errorMessage = "{\"ErrorCode\" : 2, \"ErrorMessage\" : \"Failed to Add eSIM\"}"
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 case .success:
-                                    sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
+                                    sendPluginResult(status: CDVCommandStatus_OK, message: "OK, eSIM installed successfully")
                                 @unknown default:
-                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
+                                    let errorMessage = "{\"ErrorCode\" : 2, \"ErrorMessage\" : \"Failed to Add eSIM\"}"
+                                    sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 }
                             }
                         } else {
@@ -51,33 +54,40 @@ import CoreTelephony
                             ctcp.addPlan(with: ctpr) { (result) in
                                 switch result{
                                 case .unknown:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 1: Unknown error")
+                                    let errorMessage = "{\"ErrorCode\" : 1, \"ErrorMessage\" : \"Unknown error\"}"
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 case .fail:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
+                                    let errorMessage = "{\"ErrorCode\" : 2, \"ErrorMessage\" : \"Failed to Add eSIM\"}"
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 case .success:
-                                    self.sendPluginResult(status: CDVCommandStatus_OK, message: "eSIM installed successfully")
+                                    self.sendPluginResult(status: CDVCommandStatus_OK, message: "OK, eSIM installed successfully")
                                 @unknown default:
-                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 2: Failed to Add eSIM")
+                                    let errorMessage = "{\"ErrorCode\" : 2, \"ErrorMessage\" : \"Failed to Add eSIM\"}"
+                                    self.sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                                 }
                             }
                         }
                     } else {
                         //eSIM not supported
-                        sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 3: This device is not supported")
+                        let errorMessage = "{\"ErrorCode\" : 3, \"ErrorMessage\" : \"This device is not supported\"}"
+                        sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                     }
                 } else {
                     //iOS < 12.0 (Not supported)
-                    sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 4: Device not supported. iOS version should be 12.0 or higher")
+                    let errorMessage = "{\"ErrorCode\" : 4, \"ErrorMessage\" : \"Device not supported. iOS version should be 12.0 or higher\"}"
+                    sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
                 }
 
             } else {
                 //Missing input parameters
-                sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 5: Missing input parameters")
+                let errorMessage = "{\"ErrorCode\" : 5, \"ErrorMessage\" : \"Missing input parameters\"}"
+                sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
             }
             
                     }   else {
             //Missing input parameters
-            sendPluginResult(status: CDVCommandStatus_ERROR, message: "Error 6: Missing input parameters")
+            let errorMessage = "{\"ErrorCode\" : 6, \"ErrorMessage\" : \"Missing input parameters\"}"
+            sendPluginResult(status: CDVCommandStatus_ERROR, message: errorMessage)
         }
     }
     
