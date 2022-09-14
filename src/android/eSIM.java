@@ -81,7 +81,7 @@ public class eSIM extends CordovaPlugin {
             Intent intent = new Intent(ACTION_DOWNLOAD_SUBSCRIPTION);
             PendingIntent callbackIntent = PendingIntent.getBroadcast(
                     cordova.getContext(), 0 /* requestCode */, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
             mgr.downloadSubscription(sub, true /* switchAfterDownload */,
                     callbackIntent);
         }
