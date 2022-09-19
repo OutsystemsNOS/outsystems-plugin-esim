@@ -211,9 +211,7 @@ public class eSIM extends CordovaPlugin {
             downloadAndResolution.addAction(ACTION_DOWNLOAD_SUBSCRIPTION);
             downloadAndResolution.addAction(ACTION_USER_RESOLUTION);
             cordova.getContext().registerReceiver(receiver,
-                                downloadAndResolution,
-                                LPA_DECLARED_PERMISSION /* broadcastPermission*/,
-                                null /* handler */);
+                                downloadAndResolution);
 
             // Download subscription asynchronously.
             DownloadableSubscription sub = DownloadableSubscription
