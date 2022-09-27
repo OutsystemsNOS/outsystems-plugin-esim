@@ -21,12 +21,8 @@ import android.util.Log;
 
 public class eSIM extends CordovaPlugin {
 
-    Integer resultCode;
-    Integer operationCode;
-    Integer errorCode;
-    String smdxReason;
-    String smdxSubject;
     Intent resultIntent;
+
     final String ACTION_DOWNLOAD_SUBSCRIPTION = "download_subscription";
     final String ACTION_USER_RESOLUTION = "user_resolution";
 
@@ -56,24 +52,20 @@ public class eSIM extends CordovaPlugin {
             return;
         } else {
             // Register receiver.
-            final String LPA_DECLARED_PERMISSION = cordova.getActivity().getApplicationContext().getPackageName() + ".lpa.permission.BROADCAST";
-            
-            Log.d("ESimPluginLog", LPA_DECLARED_PERMISSION);
             
             BroadcastReceiver receiver =
                     new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
                             if(ACTION_USER_RESOLUTION.equals(intent.getAction())){
-                                callbackContext.success("OK, eSIM profile received successfully, User Interaction was required to download profile!");
-                                return;
+                                Log.d("ESimPluginLog", "Finished User Resolution Activity!");
                             }else if (!ACTION_DOWNLOAD_SUBSCRIPTION.equals(intent.getAction())) {
                                 return;
                             }
-                            resultCode = getResultCode();
+                            Integer resultCode = getResultCode();
                             resultIntent = intent;
                             
-                            Log.d("ESimPluginLog", ""+resultCode);
+                            Log.d("ESimPluginLog", "Result Code: "+resultCode);
                             switch(resultCode){
                                 default:
                                     callbackContext.success("OK, eSIM profile received successfully!");
@@ -85,17 +77,20 @@ public class eSIM extends CordovaPlugin {
                                                 cordova.getContext(), 1 /* requestCode */, nIntent,
                                                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
                                         mgr.startResolutionActivity(cordova.getActivity(),1,resultIntent,callbackIntent2);
+                                        Log.d("ESimPluginLog", "Started User Resolution Activity!");
                                     }catch(SendIntentException e){
+                                        callbackContext.error("{\"ErrorCode\" : 7, \"ErrorMessage\" : \"Failed to Start User Resolution Activity!\"}");
                                         LOG.e("ESimPluginLog", "Failed to start User resolution Activity", e);
+                                        return;
                                     }
                                     break;
                                 case 2:
-                                    operationCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_OPERATION_CODE,0 /* defaultValue*/);
-                                    errorCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_ERROR_CODE,0 /* defaultValue*/);
-                                    Log.d("ESimPluginLog", ""+operationCode);
-                                    Log.d("ESimPluginLog", ""+errorCode);
+                                    Integer operationCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_OPERATION_CODE,0 /* defaultValue*/);
+                                    Integer errorCode = intent.getIntExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_ERROR_CODE,0 /* defaultValue*/);
+                                    Log.d("ESimPluginLog","Operation Code: "+operationCode);
+                                    Log.d("ESimPluginLog", "Error Code: "+errorCode);
                                     
-                                    String operation;
+                                    String operation = "";
                                     String error = "";
                                     switch(operationCode){
                                         default:
@@ -127,11 +122,11 @@ public class eSIM extends CordovaPlugin {
                                             break;
                                         case 10:
                                             operation = "GSMA";
-                                            Log.d("ESimPluginLog", smdxReason);
-                                            Log.d("ESimPluginLog", smdxSubject);
-                                            smdxReason = intent.getStringExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_SMDX_REASON_CODE);
-                                            smdxSubject = intent.getStringExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_SMDX_SUBJECT_CODE);
-                                            error = ",Reason:"+smdxReason+",Subject:"+smdxSubject;
+                                            String smdxReason = intent.getStringExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_SMDX_REASON_CODE);
+                                            String smdxSubject = intent.getStringExtra(EuiccManager.EXTRA_EMBEDDED_SUBSCRIPTION_SMDX_SUBJECT_CODE);
+                                            Log.d("ESimPluginLog", "SMDX Reason: "+smdxReason);
+                                            Log.d("ESimPluginLog", "SMDX Subject: "+smdxSubject);
+                                            error = "Reason:"+smdxReason+",Subject:"+smdxSubject;
                                             break;
                                         case 4:
                                             operation = "Generic switching profile";
@@ -197,7 +192,7 @@ public class eSIM extends CordovaPlugin {
                                             break;
                                     }
                                     
-                                    callbackContext.error("{\"ErrorCode\" : 7, \"ErrorMessage\" : \"Operation:"+operation+",Error:"+error+"\"}");
+                                    callbackContext.error("{\"ErrorCode\" : 7, \"ErrorMessage\" : \"{Operation : "+operation+" , Error : "+error+"}\"}");
                                     break;
                                 
                             }
