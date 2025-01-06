@@ -17,12 +17,18 @@ import CoreTelephony
         self.pluginCommand = command
         self.pluginResult = nil
 
-        let ctcp = CTCellularPlanProvisioning()
-        let supportsESIM = ctcp.supportsCellularPlan()
-        
-        let resultMessage = ["isEnabled": supportsESIM]
-        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: resultMessage)
-        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+       if #available(iOS 12.0, *) {
+            let ctcp = CTCellularPlanProvisioning()
+            let supportsESIM = ctcp.supportsCellularPlan()
+            
+            let resultMessage = ["isEnabled": supportsESIM]
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: resultMessage)
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        } else {
+            let errorMessage = "{\"ErrorCode\" : 4, \"ErrorMessage\" : \"Device not supported. iOS version should be 12.0 or higher\"}"
+            let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: errorMessage)
+            self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+        }
     }
     
     @objc (eSimAdd:)
