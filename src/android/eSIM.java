@@ -40,8 +40,24 @@ public class eSIM extends CordovaPlugin {
                 callbackContext.error("{\"ErrorCode\" : 5, \"ErrorMessage\" : \"Invalid input parameters\"}");
             }
             return true;
+        }else if (action.equals("isEnabled")){
+            this.eSimIsEnabled(callbackContext);        
+            return true;
+       }
+       return false;
+    }
+
+    private void eSimIsEnabled(CallbackContext callbackContext){
+        try {
+            EuiccManager mgr = (EuiccManager) this.cordova.getContext().getSystemService(Context.EUICC_SERVICE);
+            if (mgr.isEnabled()) {
+                callbackContext.success("true");
+            } else {
+                callbackContext.success("false");
+            }
+        } catch (Exception e) {
+            callbackContext.error(e.getMessage());
         }
-        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
