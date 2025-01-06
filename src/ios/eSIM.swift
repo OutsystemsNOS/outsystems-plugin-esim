@@ -11,6 +11,19 @@ import CoreTelephony
 @objc(eSIM) class eSIM: CDVPlugin {
     var pluginResult = CDVPluginResult()
     var pluginCommand = CDVInvokedUrlCommand()
+
+    @objc (isEnabled:)
+    func isEnabled (_ command: CDVInvokedUrlCommand) {
+        self.pluginCommand = command
+        self.pluginResult = nil
+
+        let ctcp = CTCellularPlanProvisioning()
+        let supportsESIM = ctcp.supportsCellularPlan()
+        
+        let resultMessage = ["isEnabled": supportsESIM]
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: resultMessage)
+        self.commandDelegate.send(pluginResult, callbackId: command.callbackId)
+    }
     
     @objc (eSimAdd:)
     func eSimAdd (_ command: CDVInvokedUrlCommand) {
