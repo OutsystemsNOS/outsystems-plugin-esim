@@ -40,7 +40,7 @@ public class eSIM extends CordovaPlugin {
                 callbackContext.error("{\"ErrorCode\" : 5, \"ErrorMessage\" : \"Invalid input parameters\"}");
             }
             return true;
-        }else if (action.equals("isEnabled")){
+        } else if (action.equals("isEnabled")){
             this.eSimIsEnabled(callbackContext);        
             return true;
        }
