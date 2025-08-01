@@ -60,6 +60,8 @@ public class eSIM extends CordovaPlugin {
         }
     }
 
+    private BroadcastReceiver esimReceiver = null;
+
     @RequiresApi(api = Build.VERSION_CODES.P)
     private void eSimAdd(String activationCode, CallbackContext callbackContext) {
         EuiccManager mgr = (EuiccManager) this.cordova.getContext().getSystemService(Context.EUICC_SERVICE);
@@ -67,9 +69,17 @@ public class eSIM extends CordovaPlugin {
             callbackContext.error("{\"ErrorCode\" : 3, \"ErrorMessage\" : \"Device is not eSIM compatible\"}");
             return;
         } else {
+            // Unregister receiver if available, to avoid duplication
+            if (esimReceiver != null) {
+                try {
+                    cordova.getActivity().unregisterReceiver(esimReceiver);
+                } catch (IllegalArgumentException e) {
+                    // ignote, receiver not registered
+                }
+                esimReceiver = null;
+            }
             // Register receiver.
-            
-            BroadcastReceiver receiver =
+            esimReceiver =
                     new BroadcastReceiver() {
                         @Override
                         public void onReceive(Context context, Intent intent) {
@@ -91,7 +101,7 @@ public class eSIM extends CordovaPlugin {
                                         Intent nIntent = new Intent(ACTION_USER_RESOLUTION);
                                         PendingIntent callbackIntent2 = PendingIntent.getBroadcast(
                                                 cordova.getContext(), 1 /* requestCode */, nIntent,
-                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT);
                                         mgr.startResolutionActivity(cordova.getActivity(),1,resultIntent,callbackIntent2);
                                         Log.d("ESimPluginLog", "Started User Resolution Activity!");
                                     }catch(SendIntentException e){
@@ -221,8 +231,8 @@ public class eSIM extends CordovaPlugin {
             IntentFilter downloadAndResolution = new IntentFilter();
             downloadAndResolution.addAction(ACTION_DOWNLOAD_SUBSCRIPTION);
             downloadAndResolution.addAction(ACTION_USER_RESOLUTION);
-            cordova.getContext().registerReceiver(receiver,
-                                downloadAndResolution);
+            cordova.getContext().registerReceiver(esimReceiver,
+                                downloadAndResolution, Context.RECEIVER_EXPORTED);
 
             // Download subscription asynchronously.
             DownloadableSubscription sub = DownloadableSubscription
@@ -230,7 +240,7 @@ public class eSIM extends CordovaPlugin {
             Intent intent = new Intent(ACTION_DOWNLOAD_SUBSCRIPTION);
             PendingIntent callbackIntent = PendingIntent.getBroadcast(
                     cordova.getContext(), 0 /* requestCode */, intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT);
             mgr.downloadSubscription(sub, true /* switchAfterDownload */,
                     callbackIntent);
         }
