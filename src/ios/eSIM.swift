@@ -12,8 +12,8 @@ import CoreTelephony
     var pluginResult = CDVPluginResult()
     var pluginCommand = CDVInvokedUrlCommand()
 
-    @objc (isEnabled:)
-    func isEnabled (_ command: CDVInvokedUrlCommand) {
+    @objc(isEnabled:)
+    func isEnabled(_ command: CDVInvokedUrlCommand) {
         self.pluginCommand = command
         self.pluginResult = nil
 
@@ -31,8 +31,8 @@ import CoreTelephony
         }
     }
     
-    @objc (eSimAdd:)
-    func eSimAdd (_ command: CDVInvokedUrlCommand) {
+    @objc(eSimAdd:)
+    func eSimAdd(_ command: CDVInvokedUrlCommand) {
         self.pluginCommand = command
         self.pluginResult = nil
         self.pluginResult?.setKeepCallbackAs(true)
